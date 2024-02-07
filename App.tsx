@@ -1,118 +1,67 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import {Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, { useState } from 'react';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+export default function App(): JSX.Element {
+   const [tasks,setTasks]=useState([
+    {
+      title:'Complete playlist till 13th vid',
+      isCompleted : false,
+    },
+    {
+      title:'Complete playlist till 13th vid',
+      isCompleted : true,
+    }
+  ]);
+  // var newTasks =  tasks
+  // newTasks.unshift({title:'some tasks',isCompleted:false}); 
+  // setTasks(newTasks);
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.heroTxt}>CamelTodo</Text>
+      <ScrollView style={styles.scroller} horizontal={true} >
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
+      <View style={styles.pageContainer}>
+        <Text style={styles.subHeading}>Remaining Tasks</Text>
+      </View> 
+      <View style={styles.pageContainer}>
+        <Text style={styles.subHeading}>Completed Tasks</Text>
+      </View>
+      
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    backgroundColor: '#233844',
+    padding: 10,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  heroTxt:{
+    fontSize:25,
+    color:'#fff',
+    fontWeight:'bold',
+    marginVertical:10
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  pageContainer: {
+    backgroundColor:'#ffffff',
+    height:windowHeight*0.65,
+    width:windowWidth*0.85,
+    marginVertical:10,
+    elevation:5,
+    padding:5,
+    margin:5
   },
-  highlight: {
-    fontWeight: '700',
+  subHeading:{
+    color:'#BF3D35',
+    marginVertical:5,
+    fontWeight:'bold',
   },
+  scroller:{
+    flex:1,
+  }
 });
-
-export default App;
