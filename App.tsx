@@ -1,208 +1,96 @@
-import { Alert, Dimensions, Keyboard, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import React, { useState } from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import EntypoIcon from 'react-native-vector-icons/Entypo';
-import 'react-native-get-random-values'
-import { v4 as uuidv4 } from 'uuid';
+// In App.js in a new project
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import React,{createContext, useContext} from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import TodoContext from './Context/TodoContext';
+import TodoProvider from './Context/TodoProvider';
 
 
-export default function App(): JSX.Element {
-   const [taskValue, setTaskValue] = useState("");
-   const [tasks,setTasks]=useState([
-    {taskId:uuidv4(),title:'',isCompleted:false}
-  ]);
+ 
 
-  function addNewTask(){
-    if (taskValue != null && taskValue.toString() != '' && taskValue!= undefined) {
-      setTasks([{taskId:uuidv4() ,title:taskValue.toString(),isCompleted:false},...tasks]);
-      setTaskValue('')
-      Keyboard.dismiss()
-    } else {
-      Alert.alert('Please enter the task title','Please enter the title of the task from the above input bar.')
-      return;
-    }
-  }
-
-  function checkIfTasKCompleted(taskId: string) {
-    const updatedTasks = tasks.map(task => {
-      if (task.taskId === taskId) {
-        if (task.isCompleted === false) {
-          return { ...task, isCompleted: true };
-        } else {
-          return { ...task, isCompleted: false };
-        }
-      }
-      return task;
-    });
-    setTasks(updatedTasks);
-  }
-  
-
+function HomeScreen({navigation}:{navigation:any}) {
+  const {counter,increaseCounterByOne} = useContext(TodoContext);
   return (
-    <TouchableWithoutFeedback style={{flex:1}} onPress={()=>{Keyboard.dismiss()}}>
-    <SafeAreaView style={styles.container}>
-      
-      <Text style={styles.heroTxt}>CamelTodo</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.subHeading}>Add a new Task</Text>
-        <TextInput style={styles.inputStyles} value={taskValue}  placeholder='Task Title' placeholderTextColor={'#333'} onChange={(e)=>setTaskValue(e.nativeEvent.text)} />
-        
-        <TouchableOpacity style={styles.button} onPress={addNewTask}>
-          <Ionicons name="add-circle" size={35} color={'#fff'}/>
-          <Text style={styles.buttonTxt}>Add Task</Text>
-        </TouchableOpacity>
-      </View>
-      <ScrollView style={styles.scroller} horizontal={true} >
-
-      <View style={styles.pageContainer}>
-        <Text style={styles.subHeading}>Remaining Tasks</Text>
-        {tasks.map((task) => {
-          if (task.isCompleted === false && task.title !== '') {
-            return (
-              <View key={task.taskId} style={styles.taskContainer}>
-                  <View style={styles.taskItem}>
-                    <Text style={styles.taskTitle}>{task.title}</Text>
-                    <View style={styles.iconsContainer}>
-                      <TouchableOpacity onPress={() => checkIfTasKCompleted(task.taskId)}>
-                        <EntypoIcon name="check" size={30} color="green" />
-                      </TouchableOpacity>
-                      <TouchableOpacity>
-                        <EntypoIcon name="cross" size={30} color="red"/>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-              </View>
-            )
-          }
-       
-        })}
-      </View> 
-      <View style={styles.pageContainer}>
-        <Text style={styles.subHeading}>Completed Tasks</Text>
-        {tasks.map((task) => {
-          if (task.isCompleted === true && task.title !== '') {
-            return (
-              <View key={task.taskId} style={styles.taskContainer}>
-                  <View style={styles.taskItem}>
-                    <Text style={styles.taskTitle}>{task.title}</Text>
-                    <View style={styles.iconsContainer}>
-                      <TouchableOpacity onPress={() => checkIfTasKCompleted(task.taskId)}>
-                        <EntypoIcon name="check" size={30} color="green" />
-                      </TouchableOpacity>
-                      <TouchableOpacity>
-                        <EntypoIcon name="cross" size={30} color="red"/>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-              </View>
-            )
-          }
-       
-        })}
-      </View>
-      
-      </ScrollView>
-    </SafeAreaView>
-    </TouchableWithoutFeedback>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>{counter}</Text>
+      <Text>Home Screen</Text>
+      <TouchableOpacity onPress={()=>{
+        navigation.navigate('Second Screen');
+      }}>
+       <Text>
+         Go to Screen Three
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#233844',
-    padding: 10,
-  },
- 
-  heroTxt:{
-    fontSize:25,
-    color:'#fff',
-    fontWeight:'bold',
-    marginVertical:10
-  },
 
-  inputContainer:{
-    backgroundColor:'#ffffff',
-    height:180,
+function ScreenTwo({navigation}:{navigation:any}) : JSX.Element {
+  const {counter,increaseCounterByOne} = useContext(TodoContext);
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Screen Two</Text>
+      <TouchableOpacity onPress={()=>{
+         navigation.navigate('Third Screen');
+      }}>
+       <Text>
+         Go to Screen Three
+        </Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={()=>{
+         increaseCounterByOne();
+      }}>
+       <Text>
+         Increase the value of the counter
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
 
-    width:windowWidth*0.85,
-    marginVertical:10,
-    elevation:5,
-    padding:10,
-    margin:5
-  },
 
-  inputStyles:{
-    borderColor:'#333',
-    borderWidth:1,
-  },
+function ScreenThree() {
+  const {counter,increaseCounterByOne} = useContext(TodoContext);
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>{counter}</Text>
+      <Text>Third Screen</Text>
+    </View>
+  );
+}
+//create a stack navigator 
+const Stack1 = createNativeStackNavigator();
+//createcontext;
+//provider;
+//consumer;
+function App() {
+  return (
 
-  button:{
-    backgroundColor:'#49C144',
-    paddingVertical:10,
-    paddingHorizontal:20,
-    alignItems:'center',
-    justifyContent:'center',
-    width:200,
-    flexDirection:'row',
-    marginVertical:10
-  },
+    <NavigationContainer>
+      <TodoProvider>
+      <Stack1.Navigator initialRouteName='Home'>
+        <Stack1.Screen name='Home' component={HomeScreen} options={
+        {
+          title:"Sai & Nidhi's App",
+          
+        }
+        } />
+        <Stack1.Screen name='Second Screen' component={ScreenTwo} />
+        <Stack1.Screen name='Third Screen' component={ScreenThree} />
+      </Stack1.Navigator>
+      </TodoProvider>
+    </NavigationContainer>
+    // //wrap all with this componenet;
+    // <NavigationContainer>
+    //   <Stack1.Navigator>
+    //     <Stack1.Screen name="Home" component={HomeScreen} />
+    //   </Stack1.Navigator>
+    // </NavigationContainer>
+  );
+}
 
-  buttonTxt:{
-    color:'#fff',
-    fontWeight:'bold',
-    marginLeft:10,
-    fontSize:16
-  },
-
-  pageContainer: {
-    backgroundColor: '#ffffff',
-    height: windowHeight * 0.65,
-    width: windowWidth * 0.85,
-    marginVertical: 10,
-    elevation: 5,
-    padding: 5,
-    margin: 5,
-  },
-
-  subHeading:{
-    color:'#BF3D35',
-    marginVertical:5,
-    fontWeight:'bold',
-  },
-
-  scroller:{
-    flex:1,
-  },
-
-  taskContainer: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    marginVertical: 5,
-    padding: 10,
-    borderWidth: 1,
-    
-  },
-  
-  taskItem: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-
-  taskTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
-  },
-
-  iconsContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-});
+export default App;
