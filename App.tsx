@@ -1,7 +1,7 @@
 // In App.js in a new project
 
 import React,{createContext, useContext} from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity,Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TodoContext from './Context/TodoContext';
@@ -11,7 +11,7 @@ import TodoProvider from './Context/TodoProvider';
  
 
 function HomeScreen({navigation}:{navigation:any}) {
-  const {counter,increaseCounterByOne} = useContext(TodoContext);
+  const {counter,increaseCounterByOne,addAnObjectToLocal} = useContext(TodoContext);
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>{counter}</Text>
@@ -23,13 +23,20 @@ function HomeScreen({navigation}:{navigation:any}) {
          Go to Screen Three
         </Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={()=>{
+       addAnObjectToLocal();
+      }}>
+       <Text>
+         save an object
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 
 function ScreenTwo({navigation}:{navigation:any}) : JSX.Element {
-  const {counter,increaseCounterByOne} = useContext(TodoContext);
+  const {counter,increaseCounterByOne,fetchItemFromLocal} = useContext(TodoContext);
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Screen Two</Text>
@@ -38,6 +45,13 @@ function ScreenTwo({navigation}:{navigation:any}) : JSX.Element {
       }}>
        <Text>
          Go to Screen Three
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={()=>{
+        fetchItemFromLocal();
+      }}>
+       <Text>
+         get object and print
         </Text>
       </TouchableOpacity>
       
@@ -54,7 +68,7 @@ function ScreenTwo({navigation}:{navigation:any}) : JSX.Element {
 
 
 function ScreenThree() {
-  const {counter,increaseCounterByOne} = useContext(TodoContext);
+  const {counter,increaseCounterByOne,addAnObjectToLocal} = useContext(TodoContext);
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>{counter}</Text>
