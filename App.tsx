@@ -44,8 +44,11 @@ function AddNewNoteScreen() {
   );
 }
 
+//creating a stack navigator for todos
 const TodoStack = createNativeStackNavigator();
+//creating a stack navigator for notes
 const NotesStack = createNativeStackNavigator();
+//creating tab bar navigator
 const Tab = createBottomTabNavigator();
 
 function TodoStackScreen() {
