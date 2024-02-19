@@ -1,109 +1,81 @@
-// In App.js in a new project
-
-import React,{createContext, useContext} from 'react';
-import { View, Text, TouchableOpacity,Alert } from 'react-native';
+import React, { createContext, useContext } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TodoContext from './Context/TodoContext';
 import TodoProvider from './Context/TodoProvider';
 
-
- 
-
-function HomeScreen({navigation}:{navigation:any}) {
-  const {counter,increaseCounterByOne,addAnObjectToLocal} = useContext(TodoContext);
+function TodoScreen({ navigation }:{navigation:any}) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>{counter}</Text>
-      <Text>Home Screen</Text>
-      <TouchableOpacity onPress={()=>{
-        navigation.navigate('Second Screen');
-      }}>
-       <Text>
-         Go to Screen Three
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={()=>{
-       addAnObjectToLocal();
-      }}>
-       <Text>
-         save an object
-        </Text>
+      <Text>Todo Screen</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('AddNewTodo')}>
+        <Text>Add New Todo</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-
-function ScreenTwo({navigation}:{navigation:any}) : JSX.Element {
-  const {counter,increaseCounterByOne,fetchItemFromLocal} = useContext(TodoContext);
+function NotesScreen({ navigation }:{navigation:any}) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Screen Two</Text>
-      <TouchableOpacity onPress={()=>{
-         navigation.navigate('Third Screen');
-      }}>
-       <Text>
-         Go to Screen Three
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={()=>{
-        fetchItemFromLocal();
-      }}>
-       <Text>
-         get object and print
-        </Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity onPress={()=>{
-         increaseCounterByOne();
-      }}>
-       <Text>
-         Increase the value of the counter
-        </Text>
+      <Text>Notes Screen</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('AddNewNote')}>
+        <Text>Add New Note</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-
-function ScreenThree() {
-  const {counter,increaseCounterByOne,addAnObjectToLocal} = useContext(TodoContext);
+function AddNewTodoScreen() {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>{counter}</Text>
-      <Text>Third Screen</Text>
+      <Text>Add New Todo Screen</Text>
     </View>
   );
 }
-//create a stack navigator 
-const Stack1 = createNativeStackNavigator();
-//createcontext;
-//provider;
-//consumer;
+
+function AddNewNoteScreen() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Add New Note Screen</Text>
+    </View>
+  );
+}
+
+const TodoStack = createNativeStackNavigator();
+const NotesStack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function TodoStackScreen() {
+  return (
+    <TodoStack.Navigator screenOptions={{ headerShown: false }}>
+      <TodoStack.Screen name="Todo" component={TodoScreen} />
+      <TodoStack.Screen name="AddNewTodo" component={AddNewTodoScreen} />
+    </TodoStack.Navigator>
+  );
+}
+
+function NotesStackScreen() {
+  return (
+    <NotesStack.Navigator screenOptions={{ headerShown: false }}>
+      <NotesStack.Screen name="Notes" component={NotesScreen} />
+      <NotesStack.Screen name="AddNewNote" component={AddNewNoteScreen} />
+    </NotesStack.Navigator>
+  );
+}
+
 function App() {
   return (
-
     <NavigationContainer>
       <TodoProvider>
-      <Stack1.Navigator initialRouteName='Home'>
-        <Stack1.Screen name='Home' component={HomeScreen} options={
-        {
-          title:"Sai & Nidhi's App",
-          
-        }
-        } />
-        <Stack1.Screen name='Second Screen' component={ScreenTwo} />
-        <Stack1.Screen name='Third Screen' component={ScreenThree} />
-      </Stack1.Navigator>
+        <Tab.Navigator>
+          <Tab.Screen name="TodoStack" component={TodoStackScreen} options={{ title: 'Todo' }} />
+          <Tab.Screen name="NoteStack" component={NotesStackScreen} options={{ title: 'Notes' }} />
+        </Tab.Navigator>
       </TodoProvider>
     </NavigationContainer>
-    // //wrap all with this componenet;
-    // <NavigationContainer>
-    //   <Stack1.Navigator>
-    //     <Stack1.Screen name="Home" component={HomeScreen} />
-    //   </Stack1.Navigator>
-    // </NavigationContainer>
   );
 }
 
