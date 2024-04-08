@@ -1,6 +1,6 @@
-import React from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
-import { useHeaderHeight } from '@react-navigation/stack';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
+import { useHeaderHeight } from '@react-navigation/elements';
 import colors from '../misc/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNotes } from '../contexts/NotesProvide';
@@ -17,11 +17,10 @@ const formatDate = ms => {
   return `${day}/${month}/${year} - ${hrs}:${min}:${sec}`;
 };
 
-const NotesDetail = ({ route }) => {
-  const [note, setNote] = useState(props.route.params.note);
-  //const { note } = route.params;
+const NotesDetail = ({ route, navigation }) => {
+  const [note, setNote] = useState(route.params.note);
   const headerHeight = useHeaderHeight();
-  const {setNotes} = useNotes();
+  const { setNotes } = useNotes();
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
@@ -33,7 +32,7 @@ const NotesDetail = ({ route }) => {
     const newNotes = notes.filter(n => n.id !== note.id);
     setNotes(newNotes);
     await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
-    props.navigation.goBack();
+    navigation.goBack();
   };
   
   const displayDeleteAlert = () => {
@@ -61,23 +60,22 @@ const NotesDetail = ({ route }) => {
     let notes = [];
     if (result !== null) notes = JSON.parse(result);
 
-    const newNotes = notes.filter(n => {
+    const newNotes = notes.map(n => {
       if (n.id === note.id) {
         n.title = title;
         n.desc = desc;
         n.isUpdated = true;
         n.time = time;
-
-        setNote(n);
       }
       return n;
     });
 
     setNotes(newNotes);
     await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
+    setNote({ ...note, title, desc, time }); // Update the local state of the note
   };
-  const handleOnClose = () => setShowModal(false);
 
+  const handleOnClose = () => setShowModal(false);
   const openEditModal = () => {
     setIsEdit(true);
     setShowModal(true);
@@ -85,16 +83,16 @@ const NotesDetail = ({ route }) => {
 
   return (
     <>
-    <ScrollView contentContainerStyle={[styles.container, { paddingTop: headerHeight }]}>
-    <Text style={styles.time}>
+      <ScrollView contentContainerStyle={[styles.container, { paddingTop: headerHeight }]}>
+        <Text style={styles.time}>
           {note.isUpdated
             ? `Updated At ${formatDate(note.time)}`
             : `Created At ${formatDate(note.time)}`}
         </Text>
-      <Text style={styles.title}>{note.title}</Text>
-      <Text style={styles.desc}>{note.desc}</Text>
-    </ScrollView>
-    <View style={styles.btnContainer}>
+        <Text style={styles.title}>{note.title}</Text>
+        <Text style={styles.desc}>{note.desc}</Text>
+      </ScrollView>
+      <View style={styles.btnContainer}>
         <RoundIconBtn
           name='delete'
           style={{ backgroundColor: colors.ERROR, marginBottom: 15 }}
@@ -115,13 +113,12 @@ const NotesDetail = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
     paddingHorizontal: 15,
   },
   title: {
     fontSize: 30,
     color: colors.PRIMARY,
-    fontSize: 'bold',
+    fontWeight: 'bold',
   },
   desc: {
     fontSize: 20,
